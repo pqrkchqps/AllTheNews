@@ -20,7 +20,10 @@ app.use(express.json());
 app.use(express.static("public"));
 
 // Connect to the Mongo DB
-mongoose.connect("mongodb://localhost/AllTheNews", { useNewUrlParser: true });
+var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/AllTheNews";
+
+mongoose.connect(MONGODB_URI);
+
 
 app.get("/scrape", (req,res)=>{
     axios.get("http://www.newsweek.com").then(function(response){
