@@ -10,6 +10,30 @@ $.getJSON("/articles", function(data) {
   });
 });
 
+$.getJSON("/articles", function(data) {
+    // For each one
+    for (var i = 0; i < data.length; i++) {
+        if(data[i].saved === true){
+      // Display the apropos information on the page
+      $("#savedarticles").append("<div class = 'artClick' data-id='" + data[i]._id + "'>" +"<h2>"+ data[i].headline + "</h2>" +"<div>"+ data[i].summary + "</div>"+ data[i].link + "</div>");
+      $("#savedarticles").append("<button sdata-id='" + data[i]._id + "' id='nosaveart'>Unsave Article</button>");
+    }
+    }
+
+});
+$(document).on("click", "#nosaveart",function(){
+    var noSaveArtId = $(this).attr("sdata-id");
+    $.ajax({
+        method: "POST",
+        url: "/articles/nosaved/" + noSaveArtId,
+        data: { 
+            saved: false
+         }
+      })
+      .then(function(savedata){
+          console.log(savedata);
+      });
+});
 $(document).on("click", "#saveart",function(){
     var thisArtId = $(this).attr("data-id");
     $.ajax({
