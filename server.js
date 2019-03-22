@@ -11,7 +11,7 @@ var app = express();
 // Require all models
 var db = require("./models");
 
-var PORT = 3000;
+var PORT = process.env.PORT || 3000;
 
 // Parse request body as JSON
 app.use(express.urlencoded({ extended: true }));
