@@ -90,13 +90,13 @@ app.get("/articles", function(req, res) {
   });
   app.post("/articles/saved/:id", function(req, res) {
     // updatesaved
-    if(req.saved === false){
+    
     db.Article.findOneAndUpdate(
         {_id:req.params.id},
         {$set:{saved:true}})    
       .then(dbArticle => res.json(dbArticle))
       .catch( err => res.json(500, err))
-    }
+    
   
   });
   app.post("/articles/nosaved/:id", function(req, res) {
