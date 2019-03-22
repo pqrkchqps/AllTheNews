@@ -1,5 +1,8 @@
 $(document).ready(function() {
 // Grab the articles as a json
+$.getJSON("/scrape", function(data){
+    console.log(data);
+})
 $.getJSON("/articles", function(data) {
     // For each one
     for (var i = 0; i < data.length; i++) {
@@ -46,6 +49,16 @@ $(document).on("click", "#saveart",function(){
       .then(function(savedata){
           console.log(savedata);
       });
+});
+
+$(document).on("click", "#scrape",function(){
+    $ajax({
+        method: "GET",
+        url:"/scrape"
+    })
+    .then(function(data){
+        console.log(data);
+    });
 });
 // Whenever someone clicks a p tag
 $(document).on("click", "div.artClick", function() {
