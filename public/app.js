@@ -1,18 +1,32 @@
 $(document).ready(function() {
+  //Grab database because scrap takes a bit
+  appendArticles();
 // Grab the articles as a json
-$.getJSON("/scrape", function(data){
-    console.log(data);
-})
-$.getJSON("/articles", function(data) {
-    // For each one
-    for (var i = 0; i < data.length; i++) {
-      // Display the apropos information on the page
-      $("#articles").append("<div class = 'artClick' data-id='" + data[i]._id + "'>" +"<h2>"+ data[i].headline + "</h2>" +"<div>"+ data[i].summary + "</div>"+ data[i].link + "</div>");
-      $("#articles").append("<button data-id='" + data[i]._id + "' id='saveart'>Save Article</button>");
-    }
-  });
+  scrapeArticles();
 });
 
+function scrapeArticles() {
+  $.getJSON("/scrape", function(data){
+      console.log(data);
+
+      //Update after data has been scraped
+      appendArticles();
+    });
+}
+
+function appendArticles(){
+  $.getJSON("/articles", function(articles) { // approperiate names is very valuable
+      // For each one
+      for (var i = 0; i < articles.length; i++) {
+        // Display the apropos information on the page
+        $("#articles").append("<div class = 'artClick' data-id='" + articles[i]._id + "'>" +"<h2>"+ articles[i].headline + "</h2>"
+        +"<div>"+ articles[i].summary + "</div>"+ articles[i].link + "</div>");
+        $("#articles").append("<button data-id='" + articles[i]._id + "' id='saveart'>Save Article</button>");
+      }
+    });
+  }
+
+//Try placing in a function and calling on $(document).ready()
 $.getJSON("/articles", function(data) {
     // For each one
     for (var i = 0; i < data.length; i++) {
@@ -29,7 +43,7 @@ $(document).on("click", "#nosaveart",function(){
     $.ajax({
         method: "POST",
         url: "/articles/nosaved/" + noSaveArtId,
-        data: { 
+        data: {
             saved: false
          }
       })
@@ -42,7 +56,7 @@ $(document).on("click", "#saveart",function(){
     $.ajax({
         method: "POST",
         url: "/articles/saved/" + thisArtId,
-        data: { 
+        data: {
             saved: true
          }
       })
@@ -66,7 +80,7 @@ $(document).on("click", "div.artClick", function() {
     $("#notes").empty();
     // Save the id from the p tag
     var thisId = $(this).attr("data-id");
-  
+
     // Now make an ajax call for the Article
     $.ajax({
       method: "GET",
@@ -83,7 +97,7 @@ $(document).on("click", "div.artClick", function() {
         $("#notes").append("<textarea id='bodyinput' name='body'></textarea>");
         // A button to submit a new note, with the id of the article saved to it
         $("#notes").append("<button data-id='" + data._id + "' id='savenote'>Save Note</button>");
-  
+
         // If there's a note in the article
         if (data.note) {
           // Place the title of the note in the title input
@@ -93,12 +107,12 @@ $(document).on("click", "div.artClick", function() {
         }
       });
   });
-  
+
   // When you click the savenote button
   $(document).on("click", "#savenote", function() {
     // Grab the id associated with the article from the submit button
     var thisId = $(this).attr("data-id");
-  
+
     // Run a POST request to change the note, using what's entered in the inputs
     $.ajax({
       method: "POST",
@@ -117,7 +131,7 @@ $(document).on("click", "div.artClick", function() {
         // Empty the notes section
         $("#notes").empty();
       });
-  
+
     // Also, remove the values entered in the input and textarea for note entry
     $("#titleinput").val("");
     $("#bodyinput").val("");
